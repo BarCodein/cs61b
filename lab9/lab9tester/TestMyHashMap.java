@@ -80,7 +80,14 @@ public class TestMyHashMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi") && b.get("hi") != null);
     }
-
+    @Test
+    public void setTest(){
+        MyHashMap<String, Integer> b = new MyHashMap<String, Integer>();
+        b.put("starChild", 5);
+        b.put("KISS", 5);
+        b.put("hi", 1);
+        System.out.println(b.keySet());
+    }
     /*
      * Test for general functionality and that the properties of Maps hold.
      */
@@ -126,7 +133,39 @@ public class TestMyHashMap {
         assertEquals(345, studentIDs.get("evil alan").intValue());
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
+    @Test
+    public void remove1(){
+        // putting key in multiple times does not affect behavior
+        MyHashMap<String, Integer> studentIDs = new MyHashMap<>();
+        studentIDs.put("sarah", 12345);
+        studentIDs.put("alan", 345);
+        studentIDs.put("alan", 345);
+        studentIDs.put("alan", 345);
 
+        // handle values being the same
+        studentIDs.put("evil alan", 345);
+        studentIDs.remove("evil alan");
+        assertEquals(2,studentIDs.size());
+        assertNull(studentIDs.remove("evil alan"));
+        assertEquals(345,(int) studentIDs.remove("alan"));
+    }
+    @Test
+    public void remove2(){
+        MyHashMap<String, Integer> studentIDs = new MyHashMap<>();
+        studentIDs.put("sarah", 12345);
+        studentIDs.put("alan", 345);
+        studentIDs.put("alan", 345);
+        studentIDs.put("alan", 345);
+
+        // handle values being the same
+        studentIDs.put("evil alan", 345);
+        assertNull(studentIDs.remove("evil alan",234));
+        studentIDs.remove("evil alan",345);
+
+        assertEquals(2,studentIDs.size());
+
+        assertEquals(345,(int) studentIDs.remove("alan"));
+    }
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
     }

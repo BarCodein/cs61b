@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import lab9.BSTMap;
 
+import java.util.Set;
+
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
  */
@@ -84,6 +86,51 @@ public class TestBSTMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void keySetTest(){
+        BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+        b.put("starChild", 5);
+        b.put("KISS", 5);
+        Set<String> set;
+        set = b.keySet();
+        System.out.println(set);
+    }
+    @Test
+    public void removeTest(){
+        BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+        b.put("starChild", 5);
+        b.put("KISS", 6);
+        int value = b.remove("KISS");
+        System.out.println(b.keySet());
+        assertEquals(6,value);
+        assertNull(b.remove("star"));
+        assertNull(b.remove("KISS"));
+
+    }
+    @Test
+    public void remove2Test(){
+        BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+        b.put("starChild", 5);
+        b.put("KISS", 6);
+        int value = b.remove("KISS",6);
+        assertEquals(6,value);
+        assertNull(b.remove("starChild",4));
+        assertNull(b.remove("KISS"));
+
+    }
+    @Test
+    public void iteratorTest(){
+        BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+        b.put("starChild", 5);
+        b.put("KISS", 6);
+        b.put("what",1);
+        b.put("if",2);
+        b.put("never again",4);
+        for(String s:b){
+            System.out.println(s);
+        }
     }
 
     public static void main(String[] args) {

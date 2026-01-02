@@ -1,7 +1,7 @@
 package lab9;
 
-import java.util.Iterator;
-import java.util.Set;
+import javax.crypto.SealedObject;
+import java.util.*;
 
 /**
  * Implementation of interface Map61B with BST as core data structure.
@@ -23,6 +23,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             key = k;
             value = v;
         }
+
     }
 
     private Node root;  /* Root node of the tree. */
@@ -44,7 +45,21 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        if (p==null){
+            return null;
+        }
+        V re = null;
+        int compare = key.compareTo(p.key);
+        if(compare==0){
+            re = p.value;
+        }
+        else if(compare>0){
+            re = getHelper(key,p.right);
+        }
+        else{
+            re = getHelper(key,p.left);
+        }
+        return re;
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,14 +67,28 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        return getHelper(key,this.root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
       * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
+        Node newnode;
+        if (p==null){
+            newnode = new Node(key,value);
+        }
+        else if (key.compareTo(p.key)>=0) {
+            newnode = new Node(p.key, p.value);
+            newnode.right = putHelper(key,value,p.right);
+            newnode.left = p.left;
+        }
+        else{
+            newnode = new Node(p.key,p.value);
+            newnode.left = putHelper(key,value,p.left);
+            newnode.right = p.right;
+        }
+        return newnode;
     }
 
     /** Inserts the key KEY
@@ -67,43 +96,116 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        size++;
+        this.root = putHelper(key,value,this.root);
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
 
     /* Returns a Set view of the keys contained in this map. */
+    private Set<K> keySetHelper(Node p){
+        Set<K> set;
+        set = new HashSet<>();
+        if(p == null){
+            return set;
+        }
+        Set<K> setleft;
+        Set<K> setright;
+        setleft = keySetHelper(p.left);
+        setright = keySetHelper(p.right);
+        set.addAll(setleft);
+        set.addAll(setright);
+        set.add(p.key);
+        return set;
+    }
+
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        return keySetHelper(this.root);
     }
 
     /** Removes KEY from the tree if present
      *  returns VALUE removed,
      *  null on failed removal.
      */
+    private Node searchSubstitute(Node p){
+        if (p.right==null){
+            return p;
+        }
+        else{
+            return searchSubstitute(p.right);
+        }
+    }
+    private Node removeNode(Node p){
+        if (p.left == null && p.right == null){
+            return null;
+        }
+        if (p.left == null){
+            return p.right;
+        }
+        else if (p.right == null){
+            return p.left;
+        }
+        else {
+            Node substitute = searchSubstitute(p.left);
+            p.key = substitute.key;
+            p.value = substitute.value;
+            p.left = removeHelper(substitute.key,null,p.left,substitute);
+            return p;
+        }
+    }
+    private Node removeHelper(K key,V value,Node p,Node nodeToReturn){
+        if (p==null)
+            return null;
+        int compare = key.compareTo(p.key);
+        if (compare == 0){
+            if (value != null && value != p.value){
+                size--;
+                p.right = removeHelper(key,value,p.right,nodeToReturn);
+            }
+            else{
+                nodeToReturn.key = p.key;
+                nodeToReturn.value = p.value;
+                p = removeNode(p);
+            }
+
+        }
+        else if(compare<0){
+            p.left = removeHelper(key,value,p.left,nodeToReturn);
+        }
+        else{
+            p.right = removeHelper(key,value,p.right,nodeToReturn);
+        }
+        return p;
+
+    }
     @Override
-    public V remove(K key) {
-        throw new UnsupportedOperationException();
+    public V remove(K key){
+        Node nodeToReturn = new Node(null,null);
+        root = removeHelper(key,null,root,nodeToReturn);
+        return nodeToReturn.value;
     }
 
     /** Removes the key-value entry for the specified key only if it is
      *  currently mapped to the specified value.  Returns the VALUE removed,
      *  null on failed removal.
      **/
+
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        Node nodeToReturn = new Node(null,null);
+        root = removeHelper(key,value,root,nodeToReturn);
+        return nodeToReturn.value;
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return keySet().iterator();
     }
 }
