@@ -1,3 +1,6 @@
+import edu.princeton.cs.algs4.Queue;
+import org.junit.Test;
+
 /**
  * Class for doing Radix sort
  *
@@ -17,7 +20,15 @@ public class RadixSort {
      */
     public static String[] sort(String[] asciis) {
         // TODO: Implement LSD Sort
-        return null;
+        int max=0;
+        for (String s:asciis){
+            if (s.length()>max)
+                max=s.length();
+        }
+        for (int i=max-1;i>=0;i--){
+            sortHelperLSD(asciis,i);
+        }
+        return asciis;
     }
 
     /**
@@ -28,7 +39,29 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+        int size= asciis.length;
+        Queue<String>[] queues = new Queue[257];
+        for (int i=0;i<257;i++){
+            queues[i] = new Queue<>();
+        }
+        for (int i=0;i<size;i++){
+            if (asciis[i].length()<=index) {
+                queues[0].enqueue(asciis[i]);
+                continue;
+            }
+            int num = (int) asciis[i].charAt(index);
+            num = num+1;
+            queues[num].enqueue(asciis[i]);
+        }
+
+        int count=0;
+        for (int i=0;i<257;i++){
+            while (!queues[i].isEmpty()){
+                asciis[count] = queues[i].dequeue();
+                count++;
+            }
+        }
+        return ;
     }
 
     /**
@@ -44,5 +77,19 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+    private void print(String[] s){
+        for (int i=0;i<s.length;i++){
+            System.out.print(s[i]+' ');
+        }
+        System.out.println();
+    }
+    @Test
+    public void test(){
+        String[] ascii = new String[]{"a","asuka","langley","tokyo","beijing","newyork",
+        "waterloo","China","soyo","kazega"};
+        print(ascii);
+        sort(ascii);
+        print(ascii);
     }
 }
