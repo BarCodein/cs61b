@@ -41,9 +41,18 @@ public class SanityCheckTest {
 
         int[] seam = sc.findVerticalSeam();
         int[] expected = {3, 4, 3, 2, 2};
+        print(seam);
+        print(expected);
         assertArrayEquals(expected, seam);
     }
 
+    private void print(int[] a){
+        for (int i:a){
+            System.out.print(i);
+            System.out.print(' ');
+        }
+        System.out.println();
+    }
     @Test
     public void sanityHorizontalSeamTest() {
         Picture p = new Picture("images/6x5.png");
@@ -51,6 +60,8 @@ public class SanityCheckTest {
 
         int[] seam = sc.findHorizontalSeam();
         int[] expected = {2, 2, 1, 2, 1, 2};
+        print(seam);
+        print(expected);
         assertArrayEquals(expected, seam);
     }
 
