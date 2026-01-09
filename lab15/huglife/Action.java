@@ -32,7 +32,8 @@ public class Action {
         REPLICATE,
         ATTACK,
         STAY,
-        DIE
+        DIE,
+        ATTACK_REPLICATE
     }
 
     /** Actions without absolute position should use UNDEFINED position. */
@@ -94,7 +95,7 @@ public class Action {
     /** Returns whether the action AT is a move action. */
     public boolean isMoveAction(ActionType at) {
         return ((at == ActionType.MOVE) || (at == ActionType.REPLICATE)
-                 || (at == ActionType.ATTACK));
+                 || (at == ActionType.ATTACK) || (at == ActionType.ATTACK_REPLICATE));
     }
 
 

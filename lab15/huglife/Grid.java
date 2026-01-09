@@ -316,6 +316,28 @@ public class Grid {
         from.attack(to);
         getInLine(tx, ty);
     }
+    void doATTACK_REPLICATE(int x,int y,int tx,int ty){
+        creatureCheck(x, y, "attack");
+        creatureCheck(tx, ty, "attack");
+
+        Creature from = getCreature(x, y);
+        Occupant to = getOccupant(tx, ty);
+        destroyCreature(tx, ty);
+        creatureCheck(x, y, "replicate");
+        collisionCheck(x, y, tx, ty, "replicate");
+
+        Creature newCreature = from.replicate();
+        createCreature(tx, ty, newCreature);
+
+        getInLine(x, y);
+
+
+
+
+
+
+
+    }
 
     /** Performs the stay action in position X, Y */
     void doStay(int x, int y) {
@@ -338,6 +360,10 @@ public class Grid {
 
         if (a.type == Action.ActionType.REPLICATE) {
             doReplicate(x, y, tx, ty);
+        }
+
+        if (a.type == Action.ActionType.ATTACK_REPLICATE) {
+            doATTACK_REPLICATE(x, y, tx, ty);
         }
 
         if (a.type == Action.ActionType.DIE) {
@@ -366,7 +392,6 @@ public class Grid {
         if (c.energy() < 0) {
             return new Action(Action.ActionType.DIE);
         }
-
         Map<Direction, Occupant> nbot = neighbors(x, y);
         return c.chooseAction(nbot);
     }

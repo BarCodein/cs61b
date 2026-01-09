@@ -1,12 +1,15 @@
 package creatures;
+import edu.princeton.cs.introcs.StdRandom;
 import huglife.Creature;
 import huglife.Direction;
 import huglife.Action;
 import huglife.Occupant;
 import huglife.HugLifeUtils;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
+import java.util.Random;
 
 /** An implementation of a motile pacifist photosynthesizer.
  *  @author Josh Hug
@@ -19,13 +22,13 @@ public class Plip extends Creature {
     private int g;
     /** blue color. */
     private int b;
-
+    private final double maxEnergy = 2.5;
     /** creates plip with energy equal to E. */
     public Plip(double e) {
         super("plip");
-        r = 0;
+        r = 99;
         g = 0;
-        b = 0;
+        b =76;
         energy = e;
     }
 
@@ -43,6 +46,7 @@ public class Plip extends Creature {
      */
     public Color color() {
         g = 63;
+        g = (int)Math.round(63+(255-63)*energy/maxEnergy);
         return color(r, g, b);
     }
 
@@ -55,11 +59,14 @@ public class Plip extends Creature {
      *  private static final variable. This is not required for this lab.
      */
     public void move() {
+        energy = energy-0.15;
     }
 
 
     /** Plips gain 0.2 energy when staying due to photosynthesis. */
     public void stay() {
+        energy = energy +0.2;
+        energy = Math.min(maxEnergy,energy);
     }
 
     /** Plips and their offspring each get 50% of the energy, with none
@@ -67,7 +74,8 @@ public class Plip extends Creature {
      *  Plip.
      */
     public Plip replicate() {
-        return this;
+        energy = energy/3;
+        return new Plip(energy);
     }
 
     /** Plips take exactly the following actions based on NEIGHBORS:
@@ -80,7 +88,48 @@ public class Plip extends Creature {
      *  scoop on how Actions work. See SampleCreature.chooseAction()
      *  for an example to follow.
      */
+    private List<Direction> availableSpace(Map<Direction, Occupant> neighbors){
+        List<Direction> list = new ArrayList<>();
+        for (Direction d :neighbors.keySet()){
+            Occupant o = neighbors.get(d);
+            if (o.name().equals("empty"))
+                list.add(d);
+        }
+        return list;
+    }
+    private boolean danger(Map<Direction, Occupant> neighbors){
+        for (Direction d : neighbors.keySet()){
+            Occupant o = neighbors.get(d);
+            if (o.name().equals("clorus"))
+                return true;
+        }
+        return false;
+    }
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
+        List<Direction> space = availableSpace(neighbors);
+        if (space.isEmpty())
+            return new Action(Action.ActionType.STAY);
+        if (energy>0.7)
+            return new Action(Action.ActionType.REPLICATE,
+                    space.get(StdRandom.uniform(space.size())));
+        if (danger(neighbors)){
+            int random = StdRandom.uniform(4);
+            if (random > 0)
+                return new Action(Action.ActionType.MOVE,
+                        space.get(StdRandom.uniform(space.size())));
+        }
+        if (!space.isEmpty()){
+            if (energy>0.6)
+                return new Action(Action.ActionType.MOVE,
+                        space.get(StdRandom.uniform(space.size())));
+            int random = StdRandom.uniform(3);
+            if (random == 0)
+                return new Action(Action.ActionType.MOVE,
+                        space.get(StdRandom.uniform(space.size())));
+        }
+
+
+
         return new Action(Action.ActionType.STAY);
     }
 
