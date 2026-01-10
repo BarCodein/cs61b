@@ -9,10 +9,10 @@ public class HugLife {
     /** Size of the world. Probably best to keep this under 100 
       *  or so.
      */
-    public static final int WORLD_SIZE = 100;
+    public static final int WORLD_SIZE = 150;
 
     /** Maximum number of cycles to simulate by default. */
-    public static final int MAX_CYCLES = 1000;
+    public static final int MAX_CYCLES = 2000;
 
     /** Time in milliseconds between simulation steps. 
      *  Reduce to make things run faster.
@@ -46,6 +46,7 @@ public class HugLife {
      *  one entire cycle between 
      */
     public void simulate(int cycles) {
+        StdDraw.setCanvasSize(900,800);
         if (GENERATE_GIF) {
             HugLifeAnimator.init(GIF_OUTPUT_FILENAME);
         }
@@ -67,6 +68,7 @@ public class HugLife {
      *   TICSBETWEENDRAW in between world drawing events.
      */
     public void simulate(int tics, int ticsBetweenDraw) {
+        //StdDraw.setCanvasSize(1000,1000);
         for (int i = 0; i < tics; i++) {
             g.tic();
             if ((i % ticsBetweenDraw) == 0) {
@@ -163,7 +165,7 @@ public class HugLife {
     public static final boolean SIMULATE_BY_CYCLE = true;
 
     /** Maximum number of tics to simulate by default if using. */
-    public static final int MAX_TICS = 100000;
+    public static final int MAX_TICS = 200000;
     /** Number of tics to simulate between draw ops. */
     public static final int TICS_BETWEEN_DRAW = 10;
 

@@ -59,13 +59,13 @@ public class Plip extends Creature {
      *  private static final variable. This is not required for this lab.
      */
     public void move() {
-        energy = energy-0.15;
+        energy = energy-0.1;
     }
 
 
     /** Plips gain 0.2 energy when staying due to photosynthesis. */
     public void stay() {
-        energy = energy +0.2;
+        energy = energy +0.25;
         energy = Math.min(maxEnergy,energy);
     }
 
@@ -74,7 +74,7 @@ public class Plip extends Creature {
      *  Plip.
      */
     public Plip replicate() {
-        energy = energy/3;
+        energy = energy*2/5;
         return new Plip(energy);
     }
 
@@ -105,15 +105,25 @@ public class Plip extends Creature {
         }
         return false;
     }
+    private int fellow(Map<Direction, Occupant> neighbors){
+        int sum = 0;
+        for (Direction d :neighbors.keySet()){
+            Occupant o = neighbors.get(d);
+            if (o.name().equals("plip"))
+                sum++;
+        }
+        return sum;
+    }
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
         List<Direction> space = availableSpace(neighbors);
+        int fellow = fellow(neighbors);
         if (space.isEmpty())
             return new Action(Action.ActionType.STAY);
-        if (energy>0.7)
+        if (energy>0.5)
             return new Action(Action.ActionType.REPLICATE,
                     space.get(StdRandom.uniform(space.size())));
         if (danger(neighbors)){
-            int random = StdRandom.uniform(4);
+            int random = StdRandom.uniform(5);
             if (random > 0)
                 return new Action(Action.ActionType.MOVE,
                         space.get(StdRandom.uniform(space.size())));
@@ -122,8 +132,10 @@ public class Plip extends Creature {
             if (energy>0.6)
                 return new Action(Action.ActionType.MOVE,
                         space.get(StdRandom.uniform(space.size())));
-            int random = StdRandom.uniform(3);
-            if (random == 0)
+            if (fellow == 0)
+                return new Action(Action.ActionType.STAY);
+            int random = StdRandom.uniform(4);
+            if (random < 2)
                 return new Action(Action.ActionType.MOVE,
                         space.get(StdRandom.uniform(space.size())));
         }

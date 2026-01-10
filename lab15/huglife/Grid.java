@@ -1,5 +1,7 @@
 package huglife;
 
+import edu.princeton.cs.introcs.StdRandom;
+
 import java.util.Queue;
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -412,6 +414,13 @@ public class Grid {
 
             Action action = requestAction(p.x, p.y);
             handleAction(p.x, p.y, action);
+
+            int t = StdRandom.uniform(10);
+            if (t==0){
+                int x = StdRandom.uniform(N);
+                int y = StdRandom.uniform(N);
+
+            }
             return false;
         }
         return true;

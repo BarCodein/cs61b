@@ -30,6 +30,16 @@ plip 12 9
 plip 50 50
 plip 60 60
 plip 40 40
+plip 40 42
+plip 40 39
+plip 41 39
+plip 41 41
+plip 39 39
+plip 39 41
+plip 35 35
+plip 35 40
+plip 40 35
+plip 45 40
 plip 30 30
 plip 20 20
 plip 15 15
@@ -39,3 +49,5 @@ plip 2 40
 plip 50 20
 plip 2 50
 plip 3 50
+clorus 40 41
+

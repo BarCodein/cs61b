@@ -30,7 +30,7 @@ public class Clorus extends Creature {
 
     @Override
     public void move() {
-        energy = energy -.08;
+        energy = energy -.07;
     }
 
     @Override
@@ -74,6 +74,15 @@ public class Clorus extends Creature {
         }
         return list;
     }
+    private int fellow(Map<Direction, Occupant> neighbors){
+        int sum = 0;
+        for (Direction d :neighbors.keySet()){
+            Occupant o = neighbors.get(d);
+            if (o.name().equals("clorus"))
+                sum++;
+        }
+        return sum;
+    }
     /*
     @Override
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
@@ -94,23 +103,24 @@ public class Clorus extends Creature {
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
         List<Direction> space = availableSpace(neighbors);
         List<Direction> food = food(neighbors);
-        //if (energy<=0)
-            //return new Action(Action.ActionType.DIE);
-        if (energy>=2){
+        int fellow = fellow(neighbors);
+        if (fellow>=3)
+            return new Action(Action.ActionType.DIE);
+        if (energy>=3 && fellow<=2){
             if (!space.isEmpty())
                 return new Action(Action.ActionType.REPLICATE,
                         space.get(StdRandom.uniform(space.size())));
-            if (!food.isEmpty())
+            if (!food.isEmpty() && fellow<=1)
                 return new Action(Action.ActionType.ATTACK_REPLICATE,
                         food.get(StdRandom.uniform(food.size())));
         }
-        if (!food.isEmpty())
+        if (!food.isEmpty() && energy<=4 && fellow < 2)
             return new Action(Action.ActionType.ATTACK,
                     food.get(StdRandom.uniform(food.size())));
 
         if (space.isEmpty())
             return new Action(Action.ActionType.STAY);
-        if (energy>=1)
+        if (energy>=2 && fellow<=2)
             return new Action(Action.ActionType.REPLICATE,
                     space.get(StdRandom.uniform(space.size())));
         return new Action(Action.ActionType.MOVE,
